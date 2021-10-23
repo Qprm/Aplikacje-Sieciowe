@@ -10,22 +10,25 @@ require_once dirname(__FILE__).'/../config.php';
 
 $x = $_REQUEST ['x'];
 $y = $_REQUEST ['y'];
-$operation = $_REQUEST ['op'];
+$z = $_REQUEST ['z'];
 
 // 2. walidacja parametrów z przygotowaniem zmiennych dla widoku
 
 // sprawdzenie, czy parametry zostały przekazane
-if ( ! (isset($x) && isset($y) && isset($operation))) {
+if ( ! (isset($x) && isset($y) && isset($z) )) {
 	//sytuacja wystąpi kiedy np. kontroler zostanie wywołany bezpośrednio - nie z formularza
 	$messages [] = 'Błędne wywołanie aplikacji. Brak jednego z parametrów.';
 }
 
 // sprawdzenie, czy potrzebne wartości zostały przekazane
 if ( $x == "") {
-	$messages [] = 'Nie podano liczby 1';
+	$messages [] = 'Nie podano kwoty';
 }
 if ( $y == "") {
-	$messages [] = 'Nie podano liczby 2';
+	$messages [] = 'Nie podano oprocentowania';
+}
+if ( $z == "") {
+	$messages [] = 'Nie podano czasu spłaty';
 }
 
 //nie ma sensu walidować dalej gdy brak parametrów
@@ -38,7 +41,11 @@ if (empty( $messages )) {
 	
 	if (! is_numeric( $y )) {
 		$messages [] = 'Druga wartość nie jest liczbą całkowitą';
-	}	
+	}
+        
+        if (! is_numeric( $z )) {
+		$messages [] = 'Trzecia wartość nie jest liczbą całkowitą';
+	}
 
 }
 
@@ -49,9 +56,11 @@ if (empty ( $messages )) { // gdy brak błędów
 	//konwersja parametrów na int
 	$x = intval($x);
 	$y = intval($y);
+        $z = intval($z);
 	
+        $result = ($x + ($x*($y/100)))/($z*12); 
 	//wykonanie operacji
-	switch ($operation) {
+	/*switch ($operation) {
 		case 'minus' :
 			$result = $x - $y;
 			break;
@@ -64,7 +73,8 @@ if (empty ( $messages )) { // gdy brak błędów
 		default :
 			$result = $x + $y;
 			break;
-	}
+	}*/
+        
 }
 
 // 4. Wywołanie widoku z przekazaniem zmiennych
